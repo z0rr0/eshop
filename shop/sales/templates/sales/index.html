@@ -1,0 +1,11 @@
+{% if categories %}
+  <ul>
+  {% for question in categories %}
+    <li>{{ question.id }} - {{ question.name }}</li>
+  {% endfor %}
+  </ul>
+{% else %}
+    <p>No categories are available.</p>
+{% endif %}
+{{ request.get_host }} {{ request.get_port }} {{ request.get_full_path }}
+{{ request.META }}

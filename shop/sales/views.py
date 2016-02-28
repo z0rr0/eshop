@@ -1,5 +1,13 @@
-# from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Category
+from shop import addons
 
+
+@addons.secure
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    categories = Category.objects.all().order_by('id')
+    context = {
+        'categories': categories,
+        'request': request,
+    }
+    return render(request, 'sales/index.html', context)
