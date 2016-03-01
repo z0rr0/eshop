@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 
 
 def get_path(request, secure):
-    uri = "{}{}".format(request.get_host(), request.get_full_path())
+    uri = request.get_host() + request.get_full_path()
     if secure:
         uri = "https://" + uri
     else:

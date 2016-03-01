@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Customer(models.Model):
     """Customer's account"""
     user = models.OneToOneField(User)
-    phone = models.CharField(max_length=19, verbose_name='phone', help_text="user's phone number")
+    phone = models.CharField(max_length=20, verbose_name='phone', help_text="user's phone number")
 
     def __str__(self):
         return self.user.username
@@ -23,7 +23,7 @@ class Delivery(models.Model):
     created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
-        return self.name
+        return "{} delivery".format(self.customer)
 
     class Meta:
         ordering = ['address']
