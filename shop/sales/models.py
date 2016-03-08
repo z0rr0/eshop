@@ -1,9 +1,12 @@
 from django.db import models
 from django.conf import settings
+from shop import addons
 
 
 class Category(models.Model):
     """Products' category"""
+    PRODUCTS_CACHE = {}
+
     name = models.CharField(max_length=200, verbose_name='name', help_text='category name', unique=True)
     desc = models.TextField(verbose_name='description', help_text='category description')
     modified = models.DateTimeField(auto_now=True, editable=False)
@@ -15,6 +18,16 @@ class Category(models.Model):
         ordering = ['name']
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+
+    @addons.easy_cache(PRODUCTS_CACHE)
+    def products_count(self):
+        return self.product_set.count()
+
+    def clean_cache(self):
+        try:
+            del self.PRODUCTS_CACHE[self]
+        except KeyError:
+            pass
 
 
 class Product(models.Model):

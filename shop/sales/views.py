@@ -9,7 +9,6 @@ LOGGER = logging.getLogger(__name__)
 
 @addons.nosecure
 def index(request):
-    LOGGER.info('index')
     categories = Category.objects.all().order_by('id')
     context = {
         'categories': categories,
