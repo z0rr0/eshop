@@ -16,9 +16,23 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 import sales.views as sales
+import accounts.views as accounts
+from django.contrib.auth import views as auth_views
+
+# error pages
+handler500 = "sales.views.custom_500"
+handler404 = "sales.views.custom_404"
 
 urlpatterns = [
     url(r'^$', sales.index, name='index'),
+    # account service pages
+    url(r'^login/?$', accounts.login, name='login'),
+    url(r'^logout/?$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    # also neede password_reset + password_change
+
+    url(r'^profile/?$', accounts.profile, name='profile'),
+    url(r'^profile/update/?$', accounts.update, name='profile_update'),
+
     # admin interface
     url(r'^admin/', admin.site.urls),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

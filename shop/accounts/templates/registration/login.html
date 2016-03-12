@@ -1,0 +1,40 @@
+{% extends "base/blank.html" %}
+{% block title %}eShop - Log In{% endblock %}
+{% block header %}Log In{% endblock %}
+
+{% block content %}
+  {% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+  {% endif %}
+
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Your account doesn't have access to this page. To proceed,
+      please login with an account that has access.</p>
+    {% else %}
+      <p>Please login to see this page.</p>
+    {% endif %}
+  {% endif %}
+
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="form-group row">
+      <label for="id_username" class="col-sm-2 form-control-label">Email</label>
+      <div class="col-sm-5">
+        <input type="text" id="id_username" name="username" class="form-control" placeholder="Email">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="id_password" class="col-sm-2 form-control-label">Password</label>
+      <div class="col-sm-5">
+        <input type="password" id="id_password" name="password" class="form-control" placeholder="Password">
+      </div>
+    </div>
+    <input type="hidden" name="next" value="{{ next }}" />
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  {# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}
+
+{% endblock content %}

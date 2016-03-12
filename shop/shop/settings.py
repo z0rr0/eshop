@@ -178,6 +178,14 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
 
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+LOGIN_REDIRECT_URL = '/'
+LOOUT_REDIRECT_URL = '/'
+
+# allow to login using email
+AUTHENTICATION_BACKENDS = ('shop.addons.EmailAuthBackend', 'django.contrib.auth.backends.ModelBackend')
+
 # rewrite global settings
 try:
     from .local_settings import ALLOWED_HOSTS

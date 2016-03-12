@@ -1,0 +1,51 @@
+{% extends "base/blank.html" %}
+{% block title %}eShop{% endblock %}
+{% block header %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-2">
+      <b>First name</b>
+    </div>
+    <div class="col-sm-10">
+      {{ customer.user.first_name }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2">
+      <b>Middle name</b>
+    </div>
+    <div class="col-sm-10">
+      {{ customer.patronymic }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2">
+      <b>Last name</b>
+    </div>
+    <div class="col-sm-10">
+      {{ customer.user.last_name }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2">
+      <b>Email</b>
+    </div>
+    <div class="col-sm-10">
+      {{ customer.user.email }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-2">
+      <b>Phone number</b>
+    </div>
+    <div class="col-sm-10">
+      {{ customer.phone }}
+    </div>
+  </div>
+</div>
+<hr>
+<p><a href="{% url 'profile_update' %}" class="btn btn-primary">Change</a></p>
+
+{% endblock content %}

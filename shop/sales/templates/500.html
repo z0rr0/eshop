@@ -15,7 +15,6 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ MEDIA_URL }}dashboard.css" rel="stylesheet">
-    <link href="{{ MEDIA_URL }}album.css" rel="stylesheet">
   </head>
 
   <body>
@@ -32,30 +31,19 @@
           <a class="nav-item nav-link" href="/">Home</a>
           {% if user.is_authenticated %}
             <a class="nav-item nav-link" href="/profile">Profile</a>
-            <a class="nav-item nav-link" href="/logout">Logout</a>
-          {% else %}
-            <a class="nav-item nav-link" href="/login">Log In</a>
           {% endif %}
         </nav>
-        <form class="pull-xs-right" action="" method="GET">
-          <input type="text" name="name" class="form-control" value="{% block search %}{% endblock %}" placeholder="Search...">
-        </form>
       </div>
     </nav>
 
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            {% block categories %}{% endblock %}
-          </ul>
-        </div>
-        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-1 main">
           <h1 class="page-header">{% block header %}{% endblock %}</h1>
           <div class="container-fluid">
             <div class="row">
               <div class="col-sm-12">
-                {% block content %}{% endblock %}
+                <h1>Internal error, plase try again or write to support.</h1>
               </div>
             </div>
           </div>
