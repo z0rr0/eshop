@@ -31,16 +31,3 @@ def nosecure(func):
         else:
             return func(*args, **kwargs)
     return wrapper
-
-
-def easy_cache(cache):
-    def get(func):
-        def wrapper(*args, **kwargs):
-            value = cache.get(args[0])
-            if value is not None:
-                return value
-            value = func(*args, **kwargs)
-            cache[args[0]] = value
-            return value
-        return wrapper
-    return get

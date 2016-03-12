@@ -66,4 +66,4 @@ shop/db.sqlite3
 tmpdbs/*
 shop/static/*
 shop/shop/local_settings.py
-shop/sales/templates/images/*
+shop/media/images/*

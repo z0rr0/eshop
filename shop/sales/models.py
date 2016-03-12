@@ -1,12 +1,11 @@
 from django.db import models
 from django.conf import settings
 from shop import addons
+import os
 
 
 class Category(models.Model):
     """Products' category"""
-    PRODUCTS_CACHE = {}
-
     name = models.CharField(max_length=200, verbose_name='name', help_text='category name', unique=True)
     desc = models.TextField(verbose_name='description', help_text='category description')
     modified = models.DateTimeField(auto_now=True, editable=False)
@@ -19,23 +18,13 @@ class Category(models.Model):
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
 
-    @addons.easy_cache(PRODUCTS_CACHE)
-    def products_count(self):
-        return self.product_set.count()
-
-    def clean_cache(self):
-        try:
-            del self.PRODUCTS_CACHE[self]
-        except KeyError:
-            pass
-
 
 class Product(models.Model):
     """Products class"""
     name = models.CharField(max_length=200, verbose_name='name', help_text='product name', db_index=True)
     category = models.ForeignKey(Category, verbose_name='category', help_text="product's category")
     price = models.FloatField(verbose_name='price', help_text="product's price", db_index=True)
-    image = models.ImageField(upload_to=settings.IMAGES_DIR, verbose_name='image', help_text="product's image")
+    image = models.ImageField(upload_to='images/', verbose_name='image', help_text="product's image")
     desc = models.TextField(verbose_name='description', help_text="product's description")
     modified = models.DateTimeField(auto_now=True, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable=False)

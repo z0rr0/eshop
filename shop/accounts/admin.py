@@ -3,12 +3,10 @@ from django.contrib import admin
 from .models import Customer, Delivery
 
 
-
-
 class CustomerAdmin(admin.ModelAdmin):
     """docstring for CustomerAdmin"""
     def customer_name(obj):
-        return "{} {}".format(obj.user.first_name, obj.user.last_name)
+        return "{} {} {}".format(obj.user.first_name, obj.patronymic, obj.user.last_name)
 
     def customer_joined(obj):
         return obj.user.date_joined

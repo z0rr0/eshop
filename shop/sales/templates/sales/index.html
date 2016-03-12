@@ -1,11 +1,75 @@
-{% if categories %}
-  <ul>
-  {% for question in categories %}
-    <li>{{ question.id }} - {{ question.name }}</li>
+{% extends "base/basis.html" %}
+{% block title %}eShop{% endblock %}
+{% block header %}eShop is not a real shop{% endblock %}
+{% block search %}{{ search }}{% endblock %}
+{% block categories %}
+  <li><a href="/?{{ params.cat_url|join:"&" }}">All</a></li>
+  {% for cat in categories %}
+    {# cache should be used here #}
+    <li><a href="/?{{ params.cat_url|join:"&" }}&cat={{ cat.id }}">{{ cat.name }} ({{ cat.product_set.count }})</a></li>
   {% endfor %}
-  </ul>
-{% else %}
-    <p>No categories are available.</p>
+{% endblock %}
+
+{% block content %}
+{% if category %}
+  <h2>{{ category.name }}</h2>
 {% endif %}
-{{ request.get_host }} {{ request.get_port }} {{ request.get_full_path }}
-{{ request.META }}
+{% if search %}
+  <p><b>Filtered by text</b>: &lsquo;{{ search }}&rsquo;</p>
+{% endif %}
+
+{% if products.has_other_pages %}
+  <nav>
+  <ul class="pagination">
+    {% if products.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="/?{{ params.page_url|join:"&" }}&page={{ products.previous_page_number }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+        <span class="sr-only">Previous</span>
+      </a>
+    </li>
+    {% endif %}
+    {% for p in products.paginator.page_range %}
+      {% if products.number == p %}
+        <li class="page-item active">
+          <span class="page-link">{{ p }} <span class="sr-only">(current)</span></span>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="/?{{ params.page_url|join:"&" }}&page={{ p }}">{{ p }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+    {% if products.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="/?{{ params.page_url|join:"&" }}&page={{ products.next_page_number }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+        <span class="sr-only">Next</span>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
+{% if products.object_list %}
+  <div class="album text-muted">
+    <div class="container">
+      <div class="row">
+      {% for product in products %}
+        <div class="card">
+          <a href="/product/{{ product.id }}" title="{{ product.name }}">
+            <img class="media-object" src="{{ product.image.url }}" height="100px">
+          </a>
+          <p class="card-text">{{ product.name|safe }}</p>
+          <p>{{ product.price|floatformat:2 }} rub.</p>
+          <p><a href="/product/{{ product.id }}" title="{{ product.name }}" class="btn btn-primary">View</a></p>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+  </div>
+{% else %}
+  <p><i>Not found any products.</i></p>
+{% endif %}
+{% endblock content %}

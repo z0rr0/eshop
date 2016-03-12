@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 class Customer(models.Model):
     """Customer's account"""
     user = models.OneToOneField(User)
+    patronymic = models.CharField(max_length=255, verbose_name='patronymic', help_text="user's patronymic")
     phone = models.CharField(max_length=20, verbose_name='phone', help_text="user's phone number")
 
     def __str__(self):

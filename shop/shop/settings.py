@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.media',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -126,8 +127,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT =  os.path.join(BASE_DIR, 'static')
 
-IMAGES_URL = '/images/'
-IMAGES_DIR = os.path.join(BASE_DIR, "sales", "templates", "images")
+# IMAGES_URL = '/images/'
+# IMAGES_DIR = os.path.join(BASE_DIR, "sales", "templates", "images")
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# IMAGES_DIR = os.path.join(MEDIA_ROOT, "images")
 
 LOGGING = {
     'version': 1,
