@@ -47,3 +47,7 @@ cat cert.key cert.crt > cert.pem
 ```
 
 After that the develop web server will be available as `http://SERVER_NAME/` or `http://SERVER_NAME/`.
+
+### 6. Docker
+
+Another way to install eShop is an using of Docker container [z0rr0/eshop](https://hub.docker.com/r/z0rr0/eshop). It is more easy, but you should know that you do :)
