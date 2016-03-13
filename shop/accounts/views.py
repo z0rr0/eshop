@@ -1,12 +1,14 @@
+from accounts.forms import Profile, Registration
+from accounts.models import Customer
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.http import Http404
 from django.shortcuts import render, redirect
+from django.views.decorators.csrf import csrf_protect
 from shop import addons
-from accounts.forms import Profile
 import logging
 
 
@@ -35,6 +37,7 @@ def profile(request):
 @addons.secure
 @csrf_protect
 def update(request):
+    """User profile update"""
     if not hasattr(request.user, 'customer'):
         raise Http404("user is not related with a customer")
     customer = request.user.customer
@@ -66,3 +69,37 @@ def update(request):
         'form': form,
     }
     return render(request, 'accounts/update.html', context)
+
+
+@addons.secure
+@csrf_protect
+def registration(request):
+    """New user registration"""
+    if request.user.is_authenticated():
+        return redirect(reverse('index'))
+    if request.method == 'POST':
+        form = Registration(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            with transaction.atomic():
+                user = User(
+                    username=data['email'],
+                    first_name=data['first_name'],
+                    last_name=data['last_name'],
+                    email=data['email'],
+                )
+                user.set_password(data['password'])
+                user.save()
+                customer = Customer(
+                    user=user,
+                    phone=data['phone'],
+                    patronymic=data['middle_name'],
+                )
+                customer.save()
+            return redirect(reverse('profile'))
+    else:
+        form = Registration()
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/create.html', context)

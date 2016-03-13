@@ -1,0 +1,71 @@
+{% extends "base/blank.html" %}
+{% block title %}eShop - registration{% endblock %}
+{% block header %}User registration{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <form action="" method="post">
+      {% csrf_token %}
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">First name</label>
+        <div class="col-sm-4">
+          {{ form.first_name }}
+          <span class="help-inline">{{ form.first_name.errors }}</span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">Middle name</label>
+        <div class="col-sm-4">
+          {{ form.middle_name }}
+          <span class="help-inline">{{ form.middle_name.errors }}</span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">Last name</label>
+        <div class="col-sm-4">
+          {{ form.last_name }}
+          <span class="help-inline">{{ form.last_name.errors }}</span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">Email</label>
+        <div class="col-sm-4">
+          {{ form.email }}
+          <span class="help-inline">{{ form.email.errors }}</span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">Phone number</label>
+        <div class="col-sm-4">
+          {{ form.phone }}
+          <span class="help-inline">{{ form.phone.errors }}</span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">Password</label>
+        <div class="col-sm-4">
+          {{ form.password }}
+          <span class="help-inline">{{ form.password.errors }}</span>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="id_first_name" class="col-sm-2 form-control-label">Password confirm</label>
+        <div class="col-sm-4">
+          {{ form.password_confirm }}
+          <span class="help-inline">{{ form.password_confirm.errors }}</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+<hr>
+{% endblock content %}

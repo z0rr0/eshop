@@ -3,6 +3,9 @@
 {% block header %}Log In{% endblock %}
 
 {% block content %}
+  <p>
+    <a href="{% url 'registration' %}" class="btn btn-info">Registration</a>
+  </p>
   {% if form.errors %}
   <p>Your username and password didn't match. Please try again.</p>
   {% endif %}

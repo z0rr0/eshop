@@ -32,6 +32,7 @@ urlpatterns = [
 
     url(r'^profile/?$', accounts.profile, name='profile'),
     url(r'^profile/update/?$', accounts.update, name='profile_update'),
+    url(r'^registration/?$', accounts.registration, name='registration'),
 
     # admin interface
     url(r'^admin/', admin.site.urls),
