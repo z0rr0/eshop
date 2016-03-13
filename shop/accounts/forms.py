@@ -4,10 +4,12 @@ from django.contrib.auth.models import User
 from django import forms
 import re
 
+# hard phone number template: +xx (xxx) xxxx-xx-xx
+PHONE_RG = re.compile(r'^\+\d{,2}\s?\(\d{3}\)\s?\d{3}-?\d{2}-?\d{2}$', re.IGNORECASE)
+
 
 def phone_validation(value):
-    rg = re.compile(r'^\+\d{,2}\s?\(\d{3}\)\s?\d{3}-\d{2}-\d{2}$')
-    if not rg.match(value):
+    if not PHONE_RG.match(value):
         raise ValidationError("incorrect phone number, please use format +xx (xxx) xxxx-xx-xx")
 
 

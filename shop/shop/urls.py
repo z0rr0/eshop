@@ -34,6 +34,10 @@ urlpatterns = [
     url(r'^profile/update/?$', accounts.update, name='profile_update'),
     url(r'^registration/?$', accounts.registration, name='registration'),
 
+    url(r'^show/(?P<id>\d+)/?$', sales.show, name='show'),
+    url(r'^add/(?P<id>\d+)/?$', sales.add, name='add'),
+    url(r'^cart/?$', sales.cart, name='cart'),
+
     # admin interface
     url(r'^admin/', admin.site.urls),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

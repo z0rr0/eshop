@@ -2,6 +2,7 @@
 {% block title %}eShop{% endblock %}
 {% block header %}eShop is not a real shop{% endblock %}
 {% block search %}{{ search }}{% endblock %}
+{% block cart %}({{ cart_count }}){% endblock %}
 {% block categories %}
   <li><a href="/?{{ params.cat_url|join:"&" }}">All</a></li>
   {% for cat in categories %}
@@ -58,12 +59,12 @@
       <div class="row">
       {% for product in products %}
         <div class="card">
-          <a href="/product/{{ product.id }}" title="{{ product.name }}">
+          <a href="{% url 'show' product.id %}" title="{{ product.name }}">
             <img class="media-object" src="{{ product.image.url }}" height="100px">
           </a>
           <p class="card-text">{{ product.name|safe }}</p>
           <p>{{ product.price|floatformat:2 }} rub.</p>
-          <p><a href="/product/{{ product.id }}" title="{{ product.name }}" class="btn btn-primary">View</a></p>
+          <p><a href="{% url 'show' product.id %}" title="{{ product.name }}" class="btn btn-primary">View</a></p>
         </div>
       {% endfor %}
       </div>

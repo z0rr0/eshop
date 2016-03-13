@@ -18,6 +18,8 @@ LOGGER = logging.getLogger(__name__)
 @addons.secure
 def login(request):
     # use custom wrapper method to control addons.secure
+    if request.user.is_authenticated():
+        return redirect(reverse('index'))
     return auth_views.login(request)
 
 
@@ -74,7 +76,7 @@ def update(request):
 @addons.secure
 @csrf_protect
 def registration(request):
-    """New user registration"""
+    """User registration"""
     if request.user.is_authenticated():
         return redirect(reverse('index'))
     if request.method == 'POST':

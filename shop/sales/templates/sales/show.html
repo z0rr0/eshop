@@ -1,0 +1,23 @@
+{% extends "base/blank.html" %}
+{% block title %}eShop - {{ product.name }}{% endblock %}
+{% block header %}{{ product.name }}{% endblock %}
+{% block cart %}({{ cart_count }}){% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <img class="media-object" src="{{ product.image.url }}" width="100%">
+      </div>
+      <div class="col-sm-6">
+        {{ product.desc|safe }}
+        <hr>
+        {% if in_cart %}
+          <a href="/" class="btn btn-primary">Checkout the Order</a>
+        {% else %}
+          <a href="{% url 'add' product.id %}" class="btn btn-primary">Add to Cart</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

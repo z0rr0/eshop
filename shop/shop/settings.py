@@ -186,6 +186,9 @@ LOOUT_REDIRECT_URL = '/'
 # allow to login using email
 AUTHENTICATION_BACKENDS = ('shop.addons.EmailAuthBackend', 'django.contrib.auth.backends.ModelBackend')
 
+COOKIE_SALT = "phu0eeH6coh4co9chae5VieXeph5geim"
+COOKIE_EXPIRE = 60 * 60 * 24 * 7  # 7 days, cookie TTL
+
 # rewrite global settings
 try:
     from .local_settings import ALLOWED_HOSTS
