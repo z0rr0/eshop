@@ -47,6 +47,11 @@
   </div>
 </div>
 <hr>
-<p><a href="{% url 'profile_update' %}" class="btn btn-primary">Change</a></p>
+<p>
+  <a href="{% url 'profile_update' %}" class="btn btn-primary">Change</a>
+  {% if customer.order_set.count %}
+    <a href="{% url 'orders' %}" class="btn btn-info">Orders</a>
+  {% endif %}
+</p>
 
 {% endblock content %}

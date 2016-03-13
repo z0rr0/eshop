@@ -63,7 +63,7 @@ class Order(models.Model):
     def total(self):
         s = 0
         for ps in self.productset_set.all():
-            s += ps.product.price * ps.number
+            s += ps.total()
         return s
 
 
@@ -80,3 +80,6 @@ class ProductSet(models.Model):
         ordering = ['id']
         verbose_name = 'ProductSet'
         verbose_name_plural = 'ProductSets'
+
+    def total(self):
+        return self.product.price * self.number

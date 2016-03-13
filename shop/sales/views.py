@@ -210,3 +210,31 @@ def confirm(request):
         'form': form,
     }
     return render(request, 'sales/confirm.html', context)
+
+
+@addons.secure
+@login_required
+def orders(request):
+    if not hasattr(request.user, 'customer'):
+        raise Http404("user is not related with a customer")
+    cart = Cart(request)
+    orders = request.user.customer.order_set.all()
+    context = {
+        'orders': orders,
+        'cart_count': cart.count(),
+    }
+    return render(request, 'sales/orders.html', context)
+
+
+@addons.secure
+@login_required
+def order(request, id):
+    if not hasattr(request.user, 'customer'):
+        raise Http404("user is not related with a customer")
+    cart = Cart(request)
+    order = get_object_or_404(Order, pk=id)
+    context = {
+        'order': order,
+        'cart_count': cart.count(),
+    }
+    return render(request, 'sales/order.html', context)

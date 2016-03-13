@@ -34,6 +34,7 @@ def profile(request):
     context = {
         'customer': request.user.customer,
         'cart_count': cart.count(),
+        'customer': request.user.customer,
     }
     return render(request, 'accounts/profile.html', context)
 
