@@ -9,6 +9,7 @@ from django.http import Http404
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from shop import addons
+from shop.cart import Cart
 import logging
 
 
@@ -23,20 +24,22 @@ def login(request):
     return auth_views.login(request)
 
 
-@login_required
 @addons.secure
+@login_required
 def profile(request):
     if not hasattr(request.user, 'customer'):
         LOGGER.error("user is not related with a customer")
         raise Http404("user is not related with a customer")
+    cart = Cart(request)
     context = {
         'customer': request.user.customer,
+        'cart_count': cart.count(),
     }
     return render(request, 'accounts/profile.html', context)
 
 
-@login_required
 @addons.secure
+@login_required
 @csrf_protect
 def update(request):
     """User profile update"""
@@ -66,9 +69,11 @@ def update(request):
             'phone': customer.phone,
         }
         form = Profile(data)
+    cart = Cart(request)
     context = {
         'customer': request.user.customer,
         'form': form,
+        'cart_count': cart.count(),
     }
     return render(request, 'accounts/update.html', context)
 
@@ -101,7 +106,9 @@ def registration(request):
             return redirect(reverse('profile'))
     else:
         form = Registration()
+    cart = Cart(request)
     context = {
         'form': form,
+        'cart_count': cart.count(),
     }
     return render(request, 'accounts/create.html', context)

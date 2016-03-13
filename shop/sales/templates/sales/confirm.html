@@ -1,0 +1,68 @@
+{% extends "base/blank.html" %}
+{% block title %}eShop - Order confirm{% endblock %}
+{% block header %}Order confirm{% endblock %}
+{% block cart %}({{ cart_count }}){% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <table class="table table-striped">
+        <thead class="thead-inverse">
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th width="150px">Number</th>
+            <th width="150px">Sum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td>{{ product.name }}</td>
+              <td>{{ product.price|floatformat:2 }}</td>
+              <td>{{ product.count }}</td>
+              <td>{{ product.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Total:</th>
+            <th></th>
+            <th></th>
+            <th>{{ total }}</th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="row">
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+          <label for="id_existed" class="col-sm-3 form-control-label">Addreses</label>
+          <div class="col-sm-6">
+            {{ form.existed }}
+            <span class="help-inline">{{ form.existed.errors }}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="id_new" class="col-sm-3 form-control-label">New shipping address</label>
+          <div class="col-sm-6">
+            {{ form.new }}
+            <span class="help-inline">{{ form.new.errors }}</span>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="id_comment" class="col-sm-3 form-control-label">Comment</label>
+          <div class="col-sm-6">
+            {{ form.comment }}
+          </div>
+        </div>
+        <a href="{% url 'cart' %}" class="btn btn-warning">Back</a>
+        <button type="submit" class="btn btn-success">Confirm</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}
+
+

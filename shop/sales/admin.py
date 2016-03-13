@@ -13,8 +13,13 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
     """docstring for OrderAdmin"""
     def order_products(order):
-        names = [r.name for r in order.product.all()]
-        return "[{}]: {}".format(len(names), ', '.join(names))
+        names = []
+        for ps in order.productset_set.all():
+            names.append("{0} [{1}]".format(ps.product.name, ps.number))
+        return '; '.join(names)
+
+    def total(order):
+        return order.total()
 
     def make_sent(self, request, queryset):
         queryset.update(status=1)
@@ -22,7 +27,7 @@ class OrderAdmin(admin.ModelAdmin):
     def make_received(self, request, queryset):
         queryset.update(status=2)
 
-    list_display = ('id', 'status', 'customer', order_products, 'modified')
+    list_display = ('id', 'status', 'customer', order_products, total, 'modified')
     search_fields = ('desc',)
     list_filter = ('status', 'modified', 'created')
     actions = ('make_sent', 'make_received')

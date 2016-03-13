@@ -46,9 +46,9 @@ class Order(models.Model):
         (2, 'received'),
     )
     customer = models.ForeignKey('accounts.Customer', verbose_name='customer')
-    product = models.ManyToManyField(Product, verbose_name='Product')
+    product = models.ManyToManyField(Product, verbose_name='Product', through='ProductSet', blank=True)
     desc = models.TextField(verbose_name='description', help_text="order's description", blank=True)
-    status = models.PositiveIntegerField(verbose_name='status', help_text="order's status", choices=STATUSES)
+    status = models.PositiveIntegerField(verbose_name='status', help_text="order's status", choices=STATUSES, default=0)
     modified = models.DateTimeField(auto_now=True, editable=False, db_index=True)
     created = models.DateTimeField(auto_now_add=True, editable=False, db_index=True)
 
@@ -59,3 +59,24 @@ class Order(models.Model):
         ordering = ['-modified', '-created']
         verbose_name = 'Order'
         verbose_name_plural = 'Orders'
+
+    def total(self):
+        s = 0
+        for ps in self.productset_set.all():
+            s += ps.product.price * ps.number
+        return s
+
+
+class ProductSet(models.Model):
+    """A set products in the order"""
+    product = models.ForeignKey(Product, verbose_name='Product')
+    order = models.ForeignKey(Order, verbose_name='Order')
+    number = models.PositiveIntegerField(verbose_name='number', default=1)
+
+    def __str__(self):
+        return "ProductSet-{}".format(self.id)
+
+    class Meta:
+        ordering = ['id']
+        verbose_name = 'ProductSet'
+        verbose_name_plural = 'ProductSets'

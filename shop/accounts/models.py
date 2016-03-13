@@ -26,6 +26,11 @@ class Delivery(models.Model):
     def __str__(self):
         return "{} delivery".format(self.customer)
 
+    def short(self):
+        if len(self.address) > 64:
+            return self.address[:64] + "..."
+        return self.address
+
     class Meta:
         ordering = ['address']
         verbose_name = 'Delivery'

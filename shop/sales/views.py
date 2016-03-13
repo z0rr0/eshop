@@ -1,117 +1,21 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.forms import formset_factory
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from sales.models import Category, Product
-from sales.forms import OrderForm
 from django.views.decorators.csrf import csrf_protect
+from sales.forms import OrderForm, DeliveryForm
+from sales.models import Category, Product, Order, ProductSet
+from accounts.models import Delivery
 from shop import addons
+from shop.cart import Cart
 import logging
 
 
 LOGGER = logging.getLogger(__name__)
-
-
-class Cart(object):
-    """Customers cart
-
-    It uses cookie NAME.
-    Cookie template is "product_id1::number1;product_id2::number2".
-    """
-
-    NAME = "cart"
-    SEP_NUM, SEP_PR = '::', ';'
-
-    def __init__(self, request=None):
-        super(Cart, self).__init__()
-        self._request = request
-        self._storage = {}
-
-    def is_empty(self):
-        if self._request is None:
-            return True
-        try:
-            self._value = self._request.get_signed_cookie(
-                self.NAME,
-                None,
-                settings.COOKIE_SALT,
-                max_age=settings.COOKIE_EXPIRE
-            )
-            if not self._value:
-                return True
-        except KeyError:
-            return True
-        return False
-
-    def get(self, force=False):
-        if self._storage or self.is_empty():
-            return self._storage
-        try:
-            value = self._request.get_signed_cookie(
-                self.NAME,
-                None,
-                settings.COOKIE_SALT,
-                max_age=settings.COOKIE_EXPIRE
-            )
-            for pair in value.split(self.SEP_PR):
-                product_id, number = pair.split(self.SEP_NUM)
-                product = Product.objects.get(pk=product_id)
-                self._storage[product] = number
-        except (KeyError, ValueError) as err:
-            LOGGER.error(err)
-        return self._storage
-
-    def set(self, response):
-        pairs = []
-        for product in self._storage:
-            pairs.append("{}{}{}".format(product.id, self.SEP_NUM, self._storage[product]))
-        value = self.SEP_PR.join(pairs)
-        response.set_signed_cookie(
-            self.NAME,
-            value,
-            settings.COOKIE_SALT,
-            max_age=settings.COOKIE_EXPIRE,
-        )
-
-    def add_or_update(self, product, number, reset=False):
-        if reset:
-            products = {}
-        else:
-            products = self.get()
-        products[product] = number
-        self._storage = products
-
-    def delete(self, product):
-        products = self.get()
-        try:
-            products.pop(product)
-        except KeyError:
-            LOGGER.debug("ignore missing product")
-        self._storage = products
-
-    def count(self):
-        return len(self.get())
-
-    def total(self):
-        value = 0
-        products = self.get()
-        try:
-            for product in products:
-                value += product.price * int(products[product])
-        except ValueError:
-            return 0
-        return value
-
-    def has(self, product):
-        products = self.get()
-        if products.get(product):
-            return True
-        return False
-
-    def clean(self):
-        response.delete_cookie(self.NAME)
-        return response
 
 
 @addons.nosecure
@@ -201,8 +105,7 @@ def add(request, id):
         'cart_count': cart.count(),
     }
     response = render(request, 'sales/show.html', context)
-    cart.set(response)
-    return response
+    return cart.set(response)
 
 
 @addons.nosecure
@@ -212,17 +115,18 @@ def delete(request, id):
     cart = Cart(request)
     cart.delete(product)
     response = redirect(reverse('cart'))
-    cart.set(response)
-    return response
+    return cart.set(response)
 
 
 @addons.secure
 @csrf_protect
 def cart(request):
+    """It showes customer's cart
+    and allows to change products numbers.
+    """
     cart = Cart(request)
     products = cart.get()
     products_ids = {p.id: p for p in products}
-
     OrderFormSet = formset_factory(OrderForm, extra=0)
     if request.method == 'POST':
         formset = OrderFormSet(request.POST)
@@ -242,5 +146,67 @@ def cart(request):
         'total': cart.total(),
     }
     response = render(request, 'sales/cart.html', context)
-    cart.set(response)
-    return response
+    return cart.set(response)
+
+
+@addons.secure
+@login_required
+@csrf_protect
+def confirm(request):
+    """It confirms a customer's order
+    and sets delivery address
+    """
+    if not hasattr(request.user, 'customer'):
+        raise Http404("user is not related with a customer")
+    customer = request.user.customer
+    cart = Cart(request)
+    if cart.is_empty():
+        # empty cart can't approve any order
+        return redirect(reverse('index'))
+    products = []
+    try:
+        for product, count in cart.get().items():
+            product.count = count
+            product.total = round(product.price * int(count), 2)
+            products.append(product)
+    except (ValueError,) as err:
+        raise Http404(err)
+    if request.method == 'POST':
+        form = DeliveryForm(request.POST)
+        form.set_choises(customer)
+        if form.is_valid():
+            data = form.cleaned_data
+            with transaction.atomic():
+                if data['new']:
+                    # create new delivery address
+                    delivery = Delivery(
+                        customer=customer,
+                        address=data['new'],
+                    )
+                    delivery.save()
+                else:
+                    # use existed address
+                    delivery = get_object_or_404(Delivery, pk=data['existed'])
+                order = Order(
+                    customer=customer,
+                    desc=data['comment'],
+                )
+                order.save()
+                for product in products:
+                    ProductSet.objects.create(
+                        product=product,
+                        order=order,
+                        number=product.count,
+                    )
+            response = redirect(reverse('index'))
+            return cart.clean(response)
+    else:
+        form = DeliveryForm()
+        form.set_choises(customer)
+    context = {
+        'products': products,
+        'cart_count': cart.count(),
+        'total': cart.total(),
+        'form': form,
+    }
+    return render(request, 'sales/confirm.html', context)

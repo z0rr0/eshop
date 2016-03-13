@@ -1,7 +1,7 @@
-from django.core.exceptions import ValidationError
+from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
-from django import forms
+from django.core.exceptions import ValidationError
 import re
 
 # hard phone number template: +xx (xxx) xxxx-xx-xx
