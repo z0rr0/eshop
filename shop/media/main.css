@@ -1,0 +1,10 @@
+ul.errorlist {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    color: #B94A48;
+    /*font-weight: bold;*/
+}
+ul.errorlist li {
+    list-style-type: none;
+}
