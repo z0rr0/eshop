@@ -36,6 +36,7 @@ urlpatterns = [
 
     url(r'^show/(?P<id>\d+)/?$', sales.show, name='show'),
     url(r'^add/(?P<id>\d+)/?$', sales.add, name='add'),
+    url(r'^delete/(?P<id>\d+)/?$', sales.delete, name='delete'),
     url(r'^cart/?$', sales.cart, name='cart'),
 
     # admin interface

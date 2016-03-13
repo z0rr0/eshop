@@ -1,7 +1,11 @@
-from django.shortcuts import render, get_object_or_404
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
+from django.forms import formset_factory
+from django.shortcuts import render, get_object_or_404, redirect
 from sales.models import Category, Product
+from sales.forms import OrderForm
+from django.views.decorators.csrf import csrf_protect
 from shop import addons
 import logging
 
@@ -70,24 +74,33 @@ class Cart(object):
             max_age=settings.COOKIE_EXPIRE,
         )
 
-    def add_or_update(self, product, number):
-        products = self.get()
+    def add_or_update(self, product, number, reset=False):
+        if reset:
+            products = {}
+        else:
+            products = self.get()
         products[product] = number
         self._storage = products
 
     def delete(self, product):
         products = self.get()
-        products.pop(product)
+        try:
+            products.pop(product)
+        except KeyError:
+            LOGGER.debug("ignore missing product")
         self._storage = products
 
     def count(self):
         return len(self.get())
 
-    def sum(self):
+    def total(self):
         value = 0
         products = self.get()
-        for product in products:
-            value += product.price * products[product]
+        try:
+            for product in products:
+                value += product.price * int(products[product])
+        except ValueError:
+            return 0
         return value
 
     def has(self, product):
@@ -95,6 +108,10 @@ class Cart(object):
         if products.get(product):
             return True
         return False
+
+    def clean(self):
+        response.delete_cookie(self.NAME)
+        return response
 
 
 @addons.nosecure
@@ -188,12 +205,42 @@ def add(request, id):
     return response
 
 
+@addons.nosecure
+def delete(request, id):
+    """It removes the product from the Cart"""
+    product = get_object_or_404(Product, pk=id)
+    cart = Cart(request)
+    cart.delete(product)
+    response = redirect(reverse('cart'))
+    cart.set(response)
+    return response
+
+
 @addons.secure
+@csrf_protect
 def cart(request):
     cart = Cart(request)
+    products = cart.get()
+    products_ids = {p.id: p for p in products}
+
+    OrderFormSet = formset_factory(OrderForm, extra=0)
+    if request.method == 'POST':
+        formset = OrderFormSet(request.POST)
+        if formset.is_valid() and formset.has_changed():
+            for cd in formset.cleaned_data:
+                product = get_object_or_404(Product, pk=cd['product'])
+                cart.add_or_update(product, cd['count'])
+    else:
+        data = [{'product': p.id, 'count': c} for p, c in products.items()]
+        formset = OrderFormSet(initial=data)
+    for form in formset:
+        form.product_info = products_ids[int(form.hidden_fields()[0].value())]
     context = {
-        'product': product,
-        'in_cart': cart.has(product),
+        'products': products,
+        'formset': formset,
         'cart_count': cart.count(),
+        'total': cart.total(),
     }
-    return render(request, 'sales/cart.html', context)
+    response = render(request, 'sales/cart.html', context)
+    cart.set(response)
+    return response

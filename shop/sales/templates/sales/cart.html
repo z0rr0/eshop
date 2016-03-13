@@ -1,0 +1,59 @@
+{% extends "base/blank.html" %}
+{% block title %}eShop - Cart{% endblock %}
+{% block header %}Cart{% endblock %}
+{% block cart %}({{ cart_count }}){% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      {% if cart_count %}
+        {% if formset.total_error_count %}
+          <p><b>Please enter a correct number value.</b></p>
+        {% endif %}
+        <form action="" method="post">
+          {% csrf_token %}
+          {{ formset.management_form.as_p }}
+          <table class="table table-striped">
+            <thead class="thead-inverse">
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th width="150px">Number</th>
+                <th width="150px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for form in formset %}
+                <tr>
+                  <td>{{ form.product_info.name }}</td>
+                  <td>{{ form.product_info.price|floatformat:2 }}</td>
+                  <td>
+                    {{ form.product }}
+                    {{ form.count }}
+                  </td>
+                  <td><a href="{% url 'delete' form.product_info.id %}" class="btn btn-danger">Delete</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th>Total:</th>
+                <th>{{ total }}</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </tfoot>
+          </table>
+          <hr>
+          <a href="/" class="btn btn-primary">Confirm</a>
+          <button type="submit" class="btn btn-success">Update</button>
+        </form>
+      {% else %}
+        <p>You have no any products inf the Cart.</p>
+        <p><a href="{% url 'index' %}" class="btn btn-primary">Continue the shopping</a></p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
+
+
