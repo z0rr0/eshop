@@ -17,8 +17,9 @@ RUN apt-get update && \
     apt-get -y upgrade
 RUN apt-get install -y python3-dev uwsgi uwsgi-core \
 	uwsgi-plugin-python3 python3-pip libjpeg-dev zlib1g-dev \
-	libtiff-dev libfreetype6-dev libwebp-dev libopenjpeg-dev
-RUN pip3 install django pillow
+	libtiff-dev libfreetype6-dev libwebp-dev libopenjpeg-dev \
+	libmysqlclient-dev
+RUN pip3 install django pillow docutils mysqlclient
 
 EXPOSE 9090
 VOLUME ["/data/"]

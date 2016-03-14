@@ -20,7 +20,6 @@ LOGGER = logging.getLogger(__name__)
 
 @addons.nosecure
 def index(request):
-    on_page = 2
     categories = Category.objects.all().order_by('name')
     # filter params: page, category, name
     category = None
@@ -44,7 +43,7 @@ def index(request):
         LOGGER.error(err)
 
     # pagination filter
-    paginator = Paginator(products, on_page)
+    paginator = Paginator(products, settings.PRODUCTS_ON_PAGE)
     page = request.GET.get('page', 1)
     try:
         products = paginator.page(page)
@@ -195,7 +194,7 @@ def confirm(request):
                         order=order,
                         number=product.count,
                     )
-            return cart.clean(redirect(reverse('index')))
+            return cart.clean(redirect(reverse('order', args=[order.id])))
     else:
         form = DeliveryForm()
         form.set_choises(customer)

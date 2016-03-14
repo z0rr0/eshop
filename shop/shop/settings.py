@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%pll$8)s^em-pmvcfjp&wgl@a-85)tgn&p@jl-w@0^t*y2e445'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -188,9 +188,10 @@ AUTHENTICATION_BACKENDS = ('shop.addons.EmailAuthBackend', 'django.contrib.auth.
 
 COOKIE_SALT = "phu0eeH6coh4co9chae5VieXeph5geim"
 COOKIE_EXPIRE = 60 * 60 * 24 * 7  # 7 days, cookie TTL
+PRODUCTS_ON_PAGE = 6
 
 # rewrite global settings
 try:
-    from .local_settings import ALLOWED_HOSTS, COOKIE_SALT, SECRET_KEY
+    from .local_settings import SECRET_KEY, COOKIE_SALT, ALLOWED_HOSTS, DATABASES
 except ImportError:
     print('Import error')
