@@ -3,7 +3,7 @@
 ### 1. Create python virtual environment
 
 ```sh
-virtualenv -p `which python` env
+virtualenv -p `which python3` env
 source env/bin/activate
 ```
 
