@@ -15,7 +15,7 @@ pip install Django Pillow
 
 ### 3. Security issues
 
-Create the file `local_settings.py` and redefine security variables: `SECRET_KEY, COOKIE_SALT, ALLOWED_HOSTS`.
+Create the file `local_settings.py` and redefine security variables: `SECRET_KEY, COOKIE_SALT, ALLOWED_HOSTS, DATABASES`.
 
 ```sh
 touch shop/shop/local_settings.py
@@ -25,11 +25,11 @@ touch shop/shop/local_settings.py
 
 ```sh
 cd shop
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py migrate accounts
-python manage.py migrate sales
-python manage.py collectstatic --noinput
+python3 manage.py migrate
+python3 manage.py createsuperuser
+python3 manage.py migrate accounts
+python3 manage.py migrate sales
+python3 manage.py collectstatic --noinput
 ```
 
 ### 5. Run develop server
