@@ -26,13 +26,13 @@ class Cart(object):
         if self._request is None:
             return True
         try:
-            self._value = self._request.get_signed_cookie(
+            value = self._request.get_signed_cookie(
                 self.NAME,
                 None,
                 settings.COOKIE_SALT,
                 max_age=settings.COOKIE_EXPIRE
             )
-            if not self._value:
+            if not value:
                 return True
         except KeyError:
             return True
