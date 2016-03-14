@@ -104,8 +104,7 @@ def add(request, id):
         'in_cart': cart.has(product),
         'cart_count': cart.count(),
     }
-    response = render(request, 'sales/show.html', context)
-    return cart.set(response)
+    return cart.set(render(request, 'sales/show.html', context))
 
 
 @addons.nosecure
@@ -114,8 +113,7 @@ def delete(request, id):
     product = get_object_or_404(Product, pk=id)
     cart = Cart(request)
     cart.delete(product)
-    response = redirect(reverse('cart'))
-    return cart.set(response)
+    return cart.set(redirect(reverse('cart')))
 
 
 @addons.secure
@@ -145,8 +143,7 @@ def cart(request):
         'cart_count': cart.count(),
         'total': cart.total(),
     }
-    response = render(request, 'sales/cart.html', context)
-    return cart.set(response)
+    return cart.set(render(request, 'sales/cart.html', context))
 
 
 @addons.secure
@@ -198,8 +195,7 @@ def confirm(request):
                         order=order,
                         number=product.count,
                     )
-            response = redirect(reverse('index'))
-            return cart.clean(response)
+            return cart.clean(redirect(reverse('index')))
     else:
         form = DeliveryForm()
         form.set_choises(customer)

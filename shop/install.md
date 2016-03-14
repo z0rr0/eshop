@@ -42,7 +42,7 @@ It uses address `http://127.0.0.1:8000/`.
 
 ### 6. Nginx
 
-The application uses `HTTP <-> HTTPS` redirects, but Djano debug web-server doesn't support it. So **Ngix** can be used for this as proxy server.
+The application uses `HTTP <-> HTTPS` redirects, but Djano debug web-server doesn't support it. So **Ngix** can be used for this as a proxy server.
 
 The Nginx config example can be found in the file `nginx_example.conf`. It has some templates that are to be replaced by proper values: `SERVER_NAME, REPO_DIR, CERTS_DIR`.
 
