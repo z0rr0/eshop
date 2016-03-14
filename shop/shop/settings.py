@@ -191,6 +191,6 @@ COOKIE_EXPIRE = 60 * 60 * 24 * 7  # 7 days, cookie TTL
 
 # rewrite global settings
 try:
-    from .local_settings import ALLOWED_HOSTS
+    from .local_settings import ALLOWED_HOSTS, COOKIE_SALT, SECRET_KEY
 except ImportError:
     print('Import error')

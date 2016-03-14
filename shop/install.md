@@ -13,7 +13,15 @@ source env/bin/activate
 pip install Django Pillow
 ```
 
-### 3. Prepare database
+### 3. Security issues
+
+Create the file `local_settings.py` and redefine security variables: `SECRET_KEY, COOKIE_SALT, ALLOWED_HOSTS`.
+
+```sh
+touch shop/shop/local_settings.py
+```
+
+### 4. Prepare database
 
 ```sh
 cd shop
@@ -24,7 +32,7 @@ python manage.py migrate sales
 python manage.py collectstatic --noinput
 ```
 
-### 4. Run develop server
+### 5. Run develop server
 
 ```
 pyton manager.py runserver
@@ -32,7 +40,7 @@ pyton manager.py runserver
 
 It uses address `http://127.0.0.1:8000/`.
 
-### 5. Nginx
+### 6. Nginx
 
 The application uses `HTTP <-> HTTPS` redirects, but Djano debug web-server doesn't support it. So **Ngix** can be used for this as proxy server.
 
@@ -48,6 +56,6 @@ cat cert.key cert.crt > cert.pem
 
 After that the develop web server will be available as `http://SERVER_NAME/` or `http://SERVER_NAME/`.
 
-### 6. Docker
+### 7. Docker
 
 Another way to install eShop is an using of Docker container [z0rr0/eshop](https://hub.docker.com/r/z0rr0/eshop). It is more easy, but you should know that you do :)
