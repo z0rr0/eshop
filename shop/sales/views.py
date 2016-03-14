@@ -227,7 +227,7 @@ def order(request, id):
     if not hasattr(request.user, 'customer'):
         raise Http404("user is not related with a customer")
     cart = Cart(request)
-    order = get_object_or_404(Order, pk=id)
+    order = get_object_or_404(Order, pk=id, customer=request.user.customer)
     context = {
         'order': order,
         'cart_count': cart.count(),
