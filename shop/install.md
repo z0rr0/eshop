@@ -46,7 +46,7 @@ The application uses `HTTP <-> HTTPS` redirects, but Djano debug web-server does
 
 The Nginx config example can be found in the file `nginx_example.conf`. It has some templates that are to be replaced by proper values: `SERVER_NAME, REPO_DIR, CERTS_DIR`.
 
-SSL certificate for custom `SERVER_NAME` can be generated using **openssl** tool:
+A self-signed SSL certificate for custom `SERVER_NAME` domain can be generated using **openssl** tool:
 
 ```sh
 openssl req -newkey rsa:2048 -new -x509 \
@@ -54,8 +54,8 @@ openssl req -newkey rsa:2048 -new -x509 \
 cat cert.key cert.crt > cert.pem
 ```
 
-After that the develop web server will be available as `http://SERVER_NAME/` or `http://SERVER_NAME/`.
+After that the develop web server will be available as `http(s)://SERVER_NAME/`.
 
 ### 7. Docker
 
-Another way to install eShop is an using of Docker container [z0rr0/eshop](https://hub.docker.com/r/z0rr0/eshop). It is more easy, but you should know that you do :)
+Another way to install eShop is an using of Docker container [z0rr0/eshop](https://hub.docker.com/r/z0rr0/eshop). It is easier, but you should know that you do :)
