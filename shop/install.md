@@ -35,7 +35,7 @@ python3 manage.py collectstatic --noinput
 ### 5. Run develop server
 
 ```
-pyton manager.py runserver
+python3 manager.py runserver
 ```
 
 It uses address `http://127.0.0.1:8000/`.
